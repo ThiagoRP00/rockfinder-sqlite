@@ -55,10 +55,21 @@ export default function SearchScreen() {
   };
 
   const filtrarEventos = () => {
+    const hoje = new Date();
+    hoje.setHours(0, 0, 0, 0);
+    
+    const eventosFuturos = eventos.filter((evento) => {
+      const partes = evento.data.trim().split('/');
+      if (partes.length !== 3) return false;
+      
+      const dataEvento = new Date(partes[2], partes[1] - 1, partes[0]);
+      return dataEvento >= hoje;
+    });
+
     if (pesquisa.trim() === "") {
-      setEventosFiltrados(eventos);
+      setEventosFiltrados(eventosFuturos);
     } else {
-      const filtrados = eventos.filter((evento) => {
+      const filtrados = eventosFuturos.filter((evento) => {
         const texto = pesquisa.toLowerCase();
         return (
           evento.nome.toLowerCase().includes(texto) ||
